@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">YaplaOque</string>
+    <string name="login_with_google">Iniciar sesión con Google</string>
+    <string name="welcome">Bienvenido</string>
+    <string name="logout">Salir</string>
+    <string name="select_district">Selección de distrito</string>
+    <string name="select_beach">Selección de playa</string>
+    <string name="go_to_options">Ir a más opciones</string>
+    <string name="what_to_do_today">¿Qué deseas hacer hoy?</string>
+    <string name="rate_beach">Calificar Playa</string>
+    <string name="explore_beach">Explorar Playa</string>
+    <string name="back">Regresar</string>
+    <string name="enter_comment">Ingrese un comentario</string>
+    <string name="enter_photo">Ingrese una foto</string>
+    <string name="submit">Enviar</string>
+    <string name="beach_has">Esta playa cuenta con:</string>
+    <string name="comments_label">Comentarios:</string>
+    <string name="go">Ir</string>
+    <string name="search_another">Buscar otra</string>
+    <string name="redirecting_maps">Te estamos direccionando a Google Maps</string>
+    <string name="thanks_message">Gracias por tu preferencia, entonces YaplaOque</string>
+    <string name="anonymous_user">Usuario Anónimo</string>
+    <string name="sample_comment">¡Excelente playa para pasar el día!</string>
+    <string name="how_was_beach">¿Qué te pareció la playa?</string>
+</resources>

@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import com.bumptech.glide.Glide;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -49,7 +51,7 @@ public class VerPlayaActivity extends AppCompatActivity {
     }
 
     private void cargarDetallesServidor() {
-        String url = "http://" + MI_IP + "/playaGestion/get_detalles_playa.php?playa=" + beachName;
+        String url = "http://" + MI_IP + "/playaGestion/get_detalles_playas.php?playa=" + beachName;
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -84,12 +86,26 @@ public class VerPlayaActivity extends AppCompatActivity {
                                 String fotoUrl = c.optString("foto_url", "");
 
                                 String contenido = usuario + " (" + calif + "★)\n\"" + texto + "\"";
-                                if (!fotoUrl.equals("nula") && !fotoUrl.isEmpty()) {
-                                    contenido += "\n📷 [Imagen adjunta]";
-                                }
-                                
                                 tv.setText(contenido);
                                 binding.layoutComentarios.addView(tv);
+
+                                if (!fotoUrl.equals("nula") && !fotoUrl.isEmpty()) {
+                                    ImageView iv = new ImageView(this);
+                                    // Ajustar tamaño de la imagen
+                                    android.widget.LinearLayout.LayoutParams params = new android.widget.LinearLayout.LayoutParams(
+                                            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                                            600 // Altura en píxeles (puedes ajustarlo)
+                                    );
+                                    params.setMargins(10, 0, 10, 30);
+                                    iv.setLayoutParams(params);
+                                    iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                                    // Cargar la imagen real desde el servidor XAMPP
+                                    String urlFoto = "http://" + MI_IP + "/playaGestion/fotos/" + fotoUrl;
+                                    Glide.with(this).load(urlFoto).into(iv);
+                                    
+                                    binding.layoutComentarios.addView(iv);
+                                }
                             }
                         }
 

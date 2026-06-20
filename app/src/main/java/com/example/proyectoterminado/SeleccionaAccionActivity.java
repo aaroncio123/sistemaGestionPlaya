@@ -1,7 +1,7 @@
 package com.example.proyectoterminado;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.proyectoterminado.databinding.SeleccionaAccionBinding;
 
@@ -21,13 +21,15 @@ public class SeleccionaAccionActivity extends AppCompatActivity {
         }
 
         binding.btnCalificar.setOnClickListener(v -> {
-            Toast.makeText(this, "Abriendo Calificar para: " + beachName, Toast.LENGTH_SHORT).show();
-            // Aquí iría el Intent a la ventana de calificar
+            Intent intent = new Intent(this, CalificarActivity.class);
+            intent.putExtra("BEACH_NAME", beachName);
+            startActivity(intent);
         });
 
         binding.btnVer.setOnClickListener(v -> {
-            Toast.makeText(this, "Abriendo Detalles para: " + beachName, Toast.LENGTH_SHORT).show();
-            // Aquí iría el Intent a la ventana de ver playa
+            Intent intent = new Intent(this, VerPlayaActivity.class);
+            intent.putExtra("BEACH_NAME", beachName);
+            startActivity(intent);
         });
     }
 }

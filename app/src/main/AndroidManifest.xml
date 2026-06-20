@@ -12,6 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.ProyectoTerminado">
         <activity
             android:name=".MainActivity"
@@ -31,6 +32,16 @@
 
         <activity
             android:name=".SeleccionaAccionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ProyectoTerminado" />
+
+        <activity
+            android:name=".CalificarActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ProyectoTerminado" />
+
+        <activity
+            android:name=".VerPlayaActivity"
             android:exported="false"
             android:theme="@style/Theme.ProyectoTerminado" />
     </application>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="opciones_limpieza">
+        <item>Limpia</item>
+        <item>Contaminada</item>
+        <item>Llena de residuos sólidos</item>
+    </string-array>
+
+    <string-array name="opciones_afluencia">
+        <item>Vacía</item>
+        <item>Aforo moderado</item>
+        <item>Saturada</item>
+    </string-array>
+
+    <string-array name="opciones_clima">
+        <item>Soleado</item>
+        <item>Nublado</item>
+        <item>Lluvioso</item>
+    </string-array>
+
+    <string-array name="opciones_seguridad">
+        <item>Segura</item>
+        <item>Precaución</item>
+        <item>Insegura</item>
+    </string-array>
+</resources>

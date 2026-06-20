@@ -36,9 +36,19 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "GoogleSignIn";
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        // Al iniciar, verificamos si el usuario ya está logueado en Firebase
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            irASeleccionarPlaya();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        // EdgeToEdge.enable(this); // Comentado para evitar pantalla negra en APIs nuevas
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -52,63 +62,83 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // Configure Google Sign In
+        // Restauramos el idToken para que Firebase pueda autenticar
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken("298905617319-7iiuc6jef1b545lnqlskb2jlco50hbev.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         binding.button.setOnClickListener(view -> signIn());
+
+        binding.btnInvitado.setOnClickListener(v -> irASeleccionarPlaya());
+
+        // BOTÓN DE EMERGENCIA: Mantén pulsado el logo
+        binding.main.setOnLongClickListener(v -> {
+            irASeleccionarPlaya();
+            return true;
+        });
     }
 
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
+                Log.d(TAG, "Resultado del launcher recibido. Código: " + result.getResultCode());
                 if (result.getResultCode() == RESULT_OK) {
                     Intent data = result.getData();
                     Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                     try {
                         GoogleSignInAccount account = task.getResult(ApiException.class);
+                        Log.d(TAG, "Google Sign-In exitoso: " + account.getEmail());
+                        Toast.makeText(this, "Google OK, autenticando en Firebase...", Toast.LENGTH_SHORT).show();
                         firebaseAuthWithGoogle(account.getIdToken());
                     } catch (ApiException e) {
-                        Log.w(TAG, "Google sign in failed", e);
+                        Log.e(TAG, "Error en Google Sign-In (ApiException). Código: " + e.getStatusCode(), e);
+                        String mensaje = "Error Google: " + e.getStatusCode();
+                        if (e.getStatusCode() == 10) mensaje += " (ID Cliente o SHA-1 mal)";
+                        if (e.getStatusCode() == 12500) mensaje += " (Falta google-services.json)";
+                        Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
                     }
+                } else {
+                    Log.w(TAG, "Inicio cancelado o error. Código: " + result.getResultCode());
+                    Toast.makeText(this, "Inicio cancelado (Código: " + result.getResultCode() + ")", Toast.LENGTH_SHORT).show();
                 }
             }
     );
 
     private void signIn() {
+        Log.d(TAG, "Iniciando proceso de signIn()");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         signInLauncher.launch(signInIntent);
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
+        Log.d(TAG, "Autenticando con Firebase usando ID Token...");
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
-                        } else {
-                            Toast.makeText(MainActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
-                            updateUI(null);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "Autenticación Firebase EXITOSA");
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        updateUI(user);
+                    } else {
+                        Log.e(TAG, "Autenticación Firebase FALLIDA", task.getException());
+                        Toast.makeText(MainActivity.this, "Fallo en Firebase: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        updateUI(null);
                     }
                 });
     }
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            Toast.makeText(this, "Bienvenido " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
-            
-            // Salto a la pantalla de Seleccionar Playa
-            Intent intent = new Intent(MainActivity.this, SeleccionaPlayaActivity.class);
-            startActivity(intent);
-            finish(); // Cerramos el login para que no se pueda volver atrás con el botón físico
+            irASeleccionarPlaya();
         }
+    }
+
+    private void irASeleccionarPlaya() {
+        Intent intent = new Intent(MainActivity.this, SeleccionaPlayaActivity.class);
+        startActivity(intent);
+        finish(); // Cerramos el login para que no se pueda volver atrás
     }
 }

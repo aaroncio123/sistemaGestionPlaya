@@ -8,6 +8,8 @@
     <string name="previous">Previous</string>
 
     <string name="default_web_client_id">298905617319-7iiuc6jef1b545lnqlskb2jlco50hbev.apps.googleusercontent.com</string>
+    <string name="logout">Cerrar Sesión</string>
+    <string name="welcome_user">Hola, %1$s!</string>
 
 
 </resources>

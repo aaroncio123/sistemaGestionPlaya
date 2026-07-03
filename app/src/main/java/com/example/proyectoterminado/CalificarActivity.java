@@ -75,7 +75,21 @@ public class CalificarActivity extends AppCompatActivity {
                     Toast.makeText(this, response, Toast.LENGTH_LONG).show();
                     finish();
                 },
-                error -> Toast.makeText(this, "Error al enviar", Toast.LENGTH_SHORT).show()
+                //Se asignan validaciones para determinar si la caida es por estos motivos
+                error -> {
+                    String errorMessage = "Error: ";
+                    if (error instanceof com.android.volley.TimeoutError) {
+                        errorMessage += "Tiempo de espera agotado";
+                    } else if (error instanceof com.android.volley.NoConnectionError) {
+                        errorMessage += "No hay conexión con el servidor";
+                    } else if (error.networkResponse != null) {
+                        errorMessage += "Error del servidor: " + error.networkResponse.statusCode;
+                    } else {
+                        errorMessage += error.getMessage();
+                    }
+                    android.util.Log.e("API_ERROR", "Detalle: " + errorMessage);
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+                }
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -87,10 +101,17 @@ public class CalificarActivity extends AppCompatActivity {
                 params.put("clima", binding.spinnerClima.getSelectedItem().toString());
                 params.put("seguridad", binding.spinnerSeguridad.getSelectedItem().toString());
                 params.put("comentario", comentario);
-                params.put("foto", imagenBase64); // Enviamos el texto de la imagen
+                params.put("foto", imagenBase64);
                 return params;
             }
         };
+
+        // Aumentar el tiempo de espera a 30 segundos
+        postRequest.setRetryPolicy(new com.android.volley.DefaultRetryPolicy(
+                30000,
+                com.android.volley.DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                com.android.volley.DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         queue.add(postRequest);
     }
 }

@@ -62,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // Restauramos el idToken para que Firebase pueda autenticar
+        // Usamos el ID de cliente web automático generado desde google-services.json
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("298905617319-7iiuc6jef1b545lnqlskb2jlco50hbev.apps.googleusercontent.com")
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
@@ -137,7 +137,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void irASeleccionarPlaya() {
+        FirebaseUser user = mAuth.getCurrentUser();
         Intent intent = new Intent(MainActivity.this, SeleccionaPlayaActivity.class);
+        if (user != null) {
+            intent.putExtra("USER_NAME", user.getDisplayName());
+        } else {
+            intent.putExtra("USER_NAME", "Invitado");
+        }
         startActivity(intent);
         finish(); // Cerramos el login para que no se pueda volver atrás
     }

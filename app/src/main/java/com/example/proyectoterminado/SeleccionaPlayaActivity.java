@@ -91,6 +91,15 @@ public class SeleccionaPlayaActivity extends AppCompatActivity implements Sensor
 
         binding.btnLogout.setOnClickListener(v -> cerrarSesion());
 
+        // PLAN B: Si no puedes agitar el emulador, haz clic en el logo
+        binding.imgLogo.setOnClickListener(v -> {
+            // Animación de pulso para que se vea pro
+            v.animate().scaleX(1.2f).scaleY(1.2f).setDuration(100).withEndAction(() -> {
+                v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start();
+            }).start();
+            elegirPlayaAleatoria();
+        });
+
         // Inicializar Sensores (Innovación: Shake)
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         acceleration = 10f;

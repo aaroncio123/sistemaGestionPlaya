@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
 
 public class SeleccionaPlayaActivity extends AppCompatActivity implements SensorEventListener {
@@ -55,6 +56,8 @@ public class SeleccionaPlayaActivity extends AppCompatActivity implements Sensor
         super.onCreate(savedInstanceState);
         binding = SeleccionaPlayaBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        actualizarFondoSegunHora();
 
         // Mostrar nombre del usuario (Personalización)
         String nombre = getIntent().getStringExtra("USER_NAME");
@@ -91,6 +94,11 @@ public class SeleccionaPlayaActivity extends AppCompatActivity implements Sensor
 
         binding.btnLogout.setOnClickListener(v -> cerrarSesion());
 
+        // Panel de Demo para la Expo (Cambio de hora manual)
+        binding.btnManana.setOnClickListener(v -> actualizarFondoManual(8, "Mañana"));
+        binding.btnTarde.setOnClickListener(v -> actualizarFondoManual(15, "Tarde"));
+        binding.btnNoche.setOnClickListener(v -> actualizarFondoManual(22, "Noche"));
+
         // PLAN B: Si no puedes agitar el emulador, haz clic en el logo
         binding.imgLogo.setOnClickListener(v -> {
             // Animación de pulso para que se vea pro
@@ -105,6 +113,27 @@ public class SeleccionaPlayaActivity extends AppCompatActivity implements Sensor
         acceleration = 10f;
         currentAcceleration = SensorManager.GRAVITY_EARTH;
         lastAcceleration = SensorManager.GRAVITY_EARTH;
+    }
+
+    private void actualizarFondoSegunHora() {
+        actualizarFondo(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+    }
+
+    private void actualizarFondoManual(int hora, String modo) {
+        actualizarFondo(hora);
+        Toast.makeText(this, "Simulando modo: " + modo, Toast.LENGTH_SHORT).show();
+    }
+
+    private void actualizarFondo(int hora) {
+        int fondoRes;
+        if (hora >= 6 && hora < 12) {
+            fondoRes = R.drawable.amanecer;
+        } else if (hora >= 12 && hora < 19) {
+            fondoRes = R.drawable.atardecer;
+        } else {
+            fondoRes = R.drawable.anochecer;
+        }
+        binding.getRoot().setBackgroundResource(fondoRes);
     }
 
     private void cerrarSesion() {

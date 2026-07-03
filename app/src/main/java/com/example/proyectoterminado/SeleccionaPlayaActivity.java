@@ -1,7 +1,14 @@
 package com.example.proyectoterminado;
 
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,14 +19,25 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.proyectoterminado.databinding.SeleccionaPlayaBinding;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.Random;
 
-public class SeleccionaPlayaActivity extends AppCompatActivity {
+public class SeleccionaPlayaActivity extends AppCompatActivity implements SensorEventListener {
 
     private SeleccionaPlayaBinding binding;
+    
+    // Sensor de movimiento para innovación (Shake)
+    private SensorManager sensorManager;
+    private float acceleration;
+    private float currentAcceleration;
+    private float lastAcceleration;
     
     // Dirección exacta para el emulador
     private final String MI_IP = "10.0.2.2";
@@ -37,6 +55,12 @@ public class SeleccionaPlayaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = SeleccionaPlayaBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Mostrar nombre del usuario (Personalización)
+        String nombre = getIntent().getStringExtra("USER_NAME");
+        if (nombre != null && !nombre.isEmpty()) {
+            binding.textViewTitle.setText(getString(R.string.welcome_user, nombre));
+        }
 
         adapterDistritos = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listaDistritos);
         adapterPlayas = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, playasFiltradas);
@@ -64,7 +88,83 @@ public class SeleccionaPlayaActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        binding.btnLogout.setOnClickListener(v -> cerrarSesion());
+
+        // Inicializar Sensores (Innovación: Shake)
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        acceleration = 10f;
+        currentAcceleration = SensorManager.GRAVITY_EARTH;
+        lastAcceleration = SensorManager.GRAVITY_EARTH;
     }
+
+    private void cerrarSesion() {
+        // Firebase Sign out
+        FirebaseAuth.getInstance().signOut();
+
+        // Google Sign out
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
+            Toast.makeText(SeleccionaPlayaActivity.this, "Sesión cerrada", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(SeleccionaPlayaActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    // --- Métodos del Sensor para Innovación (Shake to Random Beach) ---
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause() {
+        sensorManager.unregisterListener(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float x = event.values[0];
+        float y = event.values[1];
+        float z = event.values[2];
+        lastAcceleration = currentAcceleration;
+        currentAcceleration = (float) Math.sqrt(x * x + y * y + z * z);
+        float delta = currentAcceleration - lastAcceleration;
+        acceleration = acceleration * 0.9f + delta;
+
+        if (acceleration > 12) { // Si el movimiento es brusco
+            elegirPlayaAleatoria();
+        }
+    }
+
+    private void elegirPlayaAleatoria() {
+        if (!playasFiltradas.isEmpty()) {
+            // Vibración para feedback físico
+            Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            if (v != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    v.vibrate(200);
+                }
+            }
+
+            int index = new Random().nextInt(playasFiltradas.size());
+            binding.spinnerPlayas.setSelection(index);
+            Toast.makeText(this, "¡Playa sorpresa elegida! 🏖️", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
     private void cargarDatosDesdeServer() {
         RequestQueue queue = Volley.newRequestQueue(this);

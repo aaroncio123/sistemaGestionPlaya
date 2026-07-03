@@ -137,7 +137,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void irASeleccionarPlaya() {
+        FirebaseUser user = mAuth.getCurrentUser();
         Intent intent = new Intent(MainActivity.this, SeleccionaPlayaActivity.class);
+        if (user != null) {
+            intent.putExtra("USER_NAME", user.getDisplayName());
+        } else {
+            intent.putExtra("USER_NAME", "Invitado");
+        }
         startActivity(intent);
         finish(); // Cerramos el login para que no se pueda volver atrás
     }

@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.proyectoterminado" />
-                  <option name="mobileSdkAppId" value="1:298905617319:android:6281d7a2864ad688b0ec82" />
-                  <option name="projectId" value="sistemagestionplayas" />
-                  <option name="projectNumber" value="298905617319" />
+                  <option name="appId" value="com.example.playas.terminado" />
+                  <option name="mobileSdkAppId" value="1:261244677911:android:cba6f8b74bfd85d7121152" />
+                  <option name="projectId" value="sistemaplayav2" />
+                  <option name="projectNumber" value="261244677911" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

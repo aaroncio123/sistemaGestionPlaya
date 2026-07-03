@@ -1,62 +1,41 @@
 {
   "project_info": {
-    "project_number": "298905617319",
-    "project_id": "sistemagestionplayas",
-    "storage_bucket": "sistemagestionplayas.firebasestorage.app"
+    "project_number": "261244677911",
+    "project_id": "sistemaplayav2",
+    "storage_bucket": "sistemaplayav2.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:298905617319:android:d038d659862ca5e6b0ec82",
+        "mobilesdk_app_id": "1:261244677911:android:cba6f8b74bfd85d7121152",
         "android_client_info": {
-          "package_name": "com.example.proyecto_appplaya"
+          "package_name": "com.example.playas.terminado"
         }
       },
       "oauth_client": [
         {
-          "client_id": "298905617319-7iiuc6jef1b545lnqlskb2jlco50hbev.apps.googleusercontent.com",
+          "client_id": "261244677911-6jlbjdbgd09nno42n6jmv3nn961l94u3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.playas.terminado",
+            "certificate_hash": "133c2a03a8bd470ac620b61d6fe0db76f5e60758"
+          }
+        },
+        {
+          "client_id": "261244677911-t93gra500878j6phbrlq9ql3u0jf70gr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAUr3pdHzbAP_ySd1oCTXevt_WErpSvuAQ"
+          "current_key": "AIzaSyANP3SqRTU80SyRf1OR0nGevwsr-gI7PLI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "298905617319-7iiuc6jef1b545lnqlskb2jlco50hbev.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:298905617319:android:6281d7a2864ad688b0ec82",
-        "android_client_info": {
-          "package_name": "com.example.proyectoterminado"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "298905617319-7iiuc6jef1b545lnqlskb2jlco50hbev.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAUr3pdHzbAP_ySd1oCTXevt_WErpSvuAQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "298905617319-7iiuc6jef1b545lnqlskb2jlco50hbev.apps.googleusercontent.com",
+              "client_id": "261244677911-t93gra500878j6phbrlq9ql3u0jf70gr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

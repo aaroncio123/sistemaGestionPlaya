@@ -197,7 +197,7 @@ public class SeleccionaPlayaActivity extends AppCompatActivity implements Sensor
 
             int index = new Random().nextInt(playasFiltradas.size());
             binding.spinnerPlayas.setSelection(index);
-            Toast.makeText(this, "¡Playa sorpresa elegida! 🏖️", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "¡Playa sorpresa elegida!", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -10,6 +10,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.proyectoterminado.databinding.ActivityCalificarBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,7 +97,24 @@ public class CalificarActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
+                
+                // Obtener datos del usuario de Firebase
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                String nombreUsuario = "Invitado";
+                String correoUsuario = "anonimo@playas.com";
+                
+                if (user != null) {
+                    if (user.getDisplayName() != null && !user.getDisplayName().isEmpty()) {
+                        nombreUsuario = user.getDisplayName();
+                    }
+                    if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                        correoUsuario = user.getEmail();
+                    }
+                }
+
                 params.put("playa", playa);
+                params.put("usuario_nombre", nombreUsuario);
+                params.put("usuario_correo", correoUsuario);
                 params.put("estrellas", String.valueOf(binding.ratingBar.getRating()));
                 params.put("limpieza", binding.spinnerLimpieza.getSelectedItem().toString());
                 params.put("afluencia", binding.spinnerAfluencia.getSelectedItem().toString());
